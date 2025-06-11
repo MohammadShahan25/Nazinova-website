@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { HomeIcon, BookOpenIcon, UsersIcon, ChatBubbleLeftEllipsisIcon, ExclamationTriangleIcon, Bars3Icon, XMarkIcon, EyeSlashIcon, ChartBarIcon } from '@heroicons/react/24/outline';
@@ -30,7 +31,7 @@ const Navbar: React.FC<NavbarProps> = ({ isHighCouncilAuthenticated }) => {
   return (
     <aside className={`fixed top-0 left-0 h-full bg-slate-800 text-white shadow-lg transition-all duration-300 ease-in-out ${isExpanded ? 'w-64' : 'w-16'} flex flex-col z-40`}>
       <div className="flex items-center justify-between p-3 h-16 border-b border-slate-700">
-        {isExpanded && <span className="text-xl font-semibold text-red-500 whitespace-nowrap">NAZINOVA</span>}
+        {isExpanded && <span className="text-xl font-semibold text-red-500 whitespace-nowrap">FERRONOVA</span>}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
           className="p-1 text-slate-300 hover:bg-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
@@ -53,7 +54,7 @@ const Navbar: React.FC<NavbarProps> = ({ isHighCouncilAuthenticated }) => {
       </nav>
       {isExpanded && (
         <div className="p-4 border-t border-slate-700 text-xs text-slate-400 whitespace-nowrap">
-          Nazinova Council v1.1
+          Ferronova Council v1.1
         </div>
       )}
     </aside>
