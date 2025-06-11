@@ -1,0 +1,21 @@
+{
+  "name": "ferronova-council-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "esbuild index.tsx --bundle --outfile=dist/index.js --format=esm --jsx=automatic --external:react --external:react-dom/* --external:react/* --external:react-router-dom --external:@heroicons/react/* --servedir=. --loader:.tsx=tsx --loader:.ts=ts --resolve-extensions=.tsx,.ts,.js,.jsx",
+    "build": "esbuild index.tsx --bundle --outfile=dist/index.js --format=esm --jsx=automatic --external:react --external:react-dom/* --external:react/* --external:react-router-dom --external:@heroicons/react/* --loader:.tsx=tsx --loader:.ts=ts --resolve-extensions=.tsx,.ts,.js,.jsx --minify"
+  },
+  "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.6.2"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "esbuild": "^0.23.0",
+    "typescript": "^5.5.4"
+  }
+}
