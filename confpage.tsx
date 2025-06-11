@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { CONFIDENTIAL_INTEL_MESSAGES } from '../constants';
 import { ConfidentialMessage } from '../types';
@@ -13,7 +14,7 @@ const ConfidentialIntelPage: React.FC = () => {
       
       <p className="text-slate-400 mb-8 italic">
         This section contains highly sensitive information intended for High Council members ONLY.
-        Discretion is mandatory. Unauthorized disclosure will be met with the severest penalties under Nazinovan law.
+        Discretion is mandatory. Unauthorized disclosure will be met with the severest penalties under Ferronovan law.
       </p>
 
       {CONFIDENTIAL_INTEL_MESSAGES.map((message: ConfidentialMessage) => (
