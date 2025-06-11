@@ -1,113 +1,63 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import DashboardPage from './pages/DashboardPage';
-import ConstitutionPage from './pages/ConstitutionPage';
-import CouncilPage from './pages/CouncilPage';
-import PostsPage from './pages/PostsPage';
-import ReferencePage from './pages/ReferencePage';
-import ConfidentialIntelPage from './pages/ConfidentialIntelPage';
-import VotingPage from './pages/VotingPage';
-import QuizModal from './components/QuizModal';
-import { Post, CouncilMember, Poll } from './types';
-import { COUNCIL_MEMBERS_ALL, APP_NAME, HIGH_COUNCIL_QUIZ_QUESTIONS, SAMPLE_POLLS } from './constants';
+
+import React from 'react';
 
 const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [isHighCouncilAuthenticated, setIsHighCouncilAuthenticated] = useState<boolean>(false);
-  const [showQuiz, setShowQuiz] = useState<boolean>(true); // Show quiz initially
-  const [quizLocked, setQuizLocked] = useState<boolean>(false); // If quiz failed max attempts
-  const [polls, setPolls] = useState<Poll[]>(SAMPLE_POLLS);
-
-  useEffect(() => {
-    // Persist auth state in session storage to avoid re-quiz on refresh during the same session
-    const storedAuth = sessionStorage.getItem('isHighCouncilAuthenticated');
-    if (storedAuth === 'true') {
-      setIsHighCouncilAuthenticated(true);
-      setShowQuiz(false);
-    }
-  }, []);
-
-  const addPost = useCallback((newPost: Omit<Post, 'id' | 'timestamp'>) => {
-    setPosts(prevPosts => [
-      { ...newPost, id: Date.now().toString(), timestamp: new Date() },
-      ...prevPosts
-    ]);
-  }, []);
-
-  const handleAuthSuccess = () => {
-    setIsHighCouncilAuthenticated(true);
-    setShowQuiz(false);
-    setQuizLocked(false);
-    sessionStorage.setItem('isHighCouncilAuthenticated', 'true');
-  };
-  
-  const handleAuthFailure = (isFinal: boolean) => {
-    if (isFinal) {
-      setQuizLocked(true);
-      // Quiz remains shown but disabled, or you can hide it and show a lock message
-    }
+  // Basic inline styles to ensure visibility and contrast on a dark background
+  const styles: React.CSSProperties = {
+    color: 'white',
+    backgroundColor: '#111827', // A slightly different dark blue (gray-900) for contrast
+    padding: '20px',
+    margin: '20px',
+    border: '2px solid #ef4444', // Red-500 border to make it very obvious
+    borderRadius: '8px',
+    minHeight: 'calc(100vh - 80px)', // Adjust to take up most of the screen minus margins
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    fontSize: '16px',
+    fontFamily: 'sans-serif'
   };
 
-  const handleVote = useCallback((pollId: string, optionId: string) => {
-    setPolls(prevPolls => 
-      prevPolls.map(poll => {
-        if (poll.id === pollId) {
-          // Prevent re-voting or implement logic to change vote if needed
-          // For now, simple increment
-          return {
-            ...poll,
-            options: poll.options.map(opt => 
-              opt.id === optionId ? { ...opt, votes: opt.votes + 1 } : opt
-            )
-          };
-        }
-        return poll;
-      })
-    );
-  }, []);
+  const listItemStyles: React.CSSProperties = {
+    marginBottom: '8px',
+  };
 
-
-  const currentQuizQuestion = HIGH_COUNCIL_QUIZ_QUESTIONS[0]; // Assuming one question for now
-
-  if (showQuiz && !isHighCouncilAuthenticated && currentQuizQuestion && !quizLocked) {
-    return <QuizModal question={currentQuizQuestion} onAuthSuccess={handleAuthSuccess} onAuthFailure={handleAuthFailure} />;
+  const headingStyles: React.CSSProperties = {
+    color: '#f87171', // Lighter red for heading
+    marginBottom: '16px',
+    fontSize: '24px'
   }
-  
-  if (quizLocked && !isHighCouncilAuthenticated) {
-     return (
-        <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col items-center justify-center p-4 antialiased">
-            <div className="bg-slate-800 p-8 rounded-xl shadow-2xl border border-red-700 text-center">
-                <h1 className="text-3xl font-bold text-red-500 mb-4">Access Denied</h1>
-                <p className="text-slate-300 mb-2">You have failed the High Council verification process.</p>
-                <p className="text-slate-400 text-sm">Further attempts are locked. Please contact the Minister of Intelligence (MoI) for manual verification and access reinstatement.</p>
-            </div>
-        </div>
-     );
-  }
-
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex antialiased">
-      <Navbar isHighCouncilAuthenticated={isHighCouncilAuthenticated} />
-      <main className="flex-1 p-4 sm:p-6 md:p-8 ml-16 md:ml-64 transition-all duration-300 ease-in-out overflow-y-auto">
-        <h1 className="text-3xl font-bold text-red-500 mb-6">{APP_NAME}</h1>
-        <Routes>
-          <Route path="/" element={<DashboardPage posts={posts.slice(0,3)} />} />
-          <Route path="/constitution" element={<ConstitutionPage />} />
-          <Route path="/council" element={<CouncilPage councilMembers={COUNCIL_MEMBERS_ALL} />} />
-          <Route path="/posts" element={<PostsPage posts={posts} addPost={addPost} councilMembers={COUNCIL_MEMBERS_ALL} />} />
-          <Route path="/reference" element={<ReferencePage />} />
-          <Route 
-            path="/voting" 
-            element={<VotingPage polls={polls} onVote={handleVote} isHighCouncilAuthenticated={isHighCouncilAuthenticated} />} 
-          />
-          <Route 
-            path="/confidential-intel" 
-            element={isHighCouncilAuthenticated ? <ConfidentialIntelPage /> : <Navigate to="/" replace />} 
-          />
-        </Routes>
-      </main>
+    <div style={styles}>
+      <h1 style={headingStyles}>Ferronova Council Dashboard - Diagnostic Load Test</h1>
+      <p style={{marginBottom: '12px'}}>
+        If you are seeing this message, the basic React application structure (index.html, index.tsx) and Vercel's client-side rendering capabilities are working correctly with the importmap.
+      </p>
+      <p style={{marginBottom: '20px'}}>
+        The "dark blue screen" issue you experienced likely originates from an error within the original, more complex <strong>App.tsx</strong>, its child components (e.g., QuizModal, Navbar, Pages), data constants, or state management logic.
+      </p>
+      <h2 style={{fontSize: '18px', color: '#fca5a5', marginBottom: '10px'}}>Next Steps:</h2>
+      <ol style={{ listStyle: 'decimal inside', textAlign: 'left', maxWidth: '600px', margin: '0 auto' }}>
+        <li style={listItemStyles}>
+          <strong>If this message appears:</strong> The problem is specific to your application's original code. You'll need to:
+          <ul style={{listStyle: 'circle inside', marginLeft: '20px', marginTop: '5px'}}>
+            <li style={listItemStyles}>Revert to your original `App.tsx`.</li>
+            <li style={listItemStyles}>Carefully check your browser's developer console (F12 -> Console) for JavaScript errors on the Vercel deployment with the original code.</li>
+            <li style={listItemStyles}>Incrementally comment out sections of your original `App.tsx` and its child components to isolate which part is causing the crash. React Error Boundaries can also help catch and identify issues in specific components.</li>
+          </ul>
+        </li>
+        <li style={listItemStyles}>
+          <strong>If this message does NOT appear (still a blank screen):</strong> The issue is more fundamental. Check:
+           <ul style={{listStyle: 'circle inside', marginLeft: '20px', marginTop: '5px'}}>
+             <li style={listItemStyles}>Browser console for errors (even with this simple version). Errors might point to problems loading React or other importmap dependencies.</li>
+             <li style={listItemStyles}>Your `index.html` (especially the importmap URLs and script tags).</li>
+             <li style={listItemStyles}>Vercel build logs again for any subtle clues.</li>
+           </ul>
+        </li>
+      </ol>
     </div>
   );
 };
