@@ -1,63 +1,180 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 
-import React from 'react';
+// Components
+import Navbar from './components/Navbar';
+import QuizModal from './components/QuizModal';
+
+// Pages
+import DashboardPage from './pages/DashboardPage';
+import ConstitutionPage from './pages/ConstitutionPage';
+import CouncilPage from './pages/CouncilPage';
+import PostsPage from './pages/PostsPage';
+import ReferencePage from './pages/ReferencePage';
+import ConfidentialIntelPage from './pages/ConfidentialIntelPage';
+import VotingPage from './pages/VotingPage';
+
+// Data and Types
+import { Post, CouncilMember, QuizQuestion, Poll } from './types';
+import { HIGH_COUNCIL_QUIZ_QUESTIONS, COUNCIL_MEMBERS_ALL, SAMPLE_POLLS } from './constants';
 
 const App: React.FC = () => {
-  // Basic inline styles to ensure visibility and contrast on a dark background
-  const styles: React.CSSProperties = {
-    color: 'white',
-    backgroundColor: '#111827', // A slightly different dark blue (gray-900) for contrast
-    padding: '20px',
-    margin: '20px',
-    border: '2px solid #ef4444', // Red-500 border to make it very obvious
-    borderRadius: '8px',
-    minHeight: 'calc(100vh - 80px)', // Adjust to take up most of the screen minus margins
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    textAlign: 'center',
-    fontSize: '16px',
-    fontFamily: 'sans-serif'
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [councilMembers] = useState<CouncilMember[]>(COUNCIL_MEMBERS_ALL);
+  const [polls, setPolls] = useState<Poll[]>(SAMPLE_POLLS);
+
+  const [isHighCouncilAuthenticated, setIsHighCouncilAuthenticated] = useState(false);
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [isNavbarExpanded, setIsNavbarExpanded] = useState(true); // Default to expanded
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Load data from localStorage
+  useEffect(() => {
+    const storedPosts = localStorage.getItem('ferronova-posts');
+    if (storedPosts) {
+      setPosts(JSON.parse(storedPosts).map((p: Post) => ({...p, timestamp: new Date(p.timestamp)})));
+    }
+    const storedPolls = localStorage.getItem('ferronova-polls');
+    if (storedPolls) {
+      setPolls(JSON.parse(storedPolls).map((p: Poll) => ({...p, createdAt: new Date(p.createdAt)})));
+    }
+    // Check persisted auth state
+    if (sessionStorage.getItem('ferronova-hc-auth') === 'true') {
+      setIsHighCouncilAuthenticated(true);
+    }
+  }, []);
+
+  // Save posts and polls to localStorage
+  useEffect(() => {
+    localStorage.setItem('ferronova-posts', JSON.stringify(posts));
+  }, [posts]);
+
+  useEffect(() => {
+    localStorage.setItem('ferronova-polls', JSON.stringify(polls));
+  }, [polls]);
+
+  // Persist auth state in session storage
+   useEffect(() => {
+      if (isHighCouncilAuthenticated) {
+          sessionStorage.setItem('ferronova-hc-auth', 'true');
+      } else {
+          sessionStorage.removeItem('ferronova-hc-auth');
+      }
+  },[isHighCouncilAuthenticated]);
+
+  const addPost = useCallback((newPostData: Omit<Post, 'id' | 'timestamp'>) => {
+    const newPost: Post = {
+      ...newPostData,
+      id: `post-${Date.now()}-${Math.random().toString(36).substring(7)}`,
+      timestamp: new Date(),
+    };
+    setPosts(prevPosts => [newPost, ...prevPosts].sort((a,b) => b.timestamp.getTime() - a.timestamp.getTime()));
+  }, []);
+
+  const handleVote = useCallback((pollId: string, optionId: string) => {
+    setPolls(prevPolls => prevPolls.map(poll => {
+      if (poll.id === pollId && poll.isOpen) { // Ensure poll is open
+        const optionExists = poll.options.some(opt => opt.id === optionId);
+        if (!optionExists) return poll; // Invalid option
+        
+        // Prevent double voting if needed (more complex state, for now allow re-vote to change)
+        // This simple version just increments.
+        return {
+          ...poll,
+          options: poll.options.map(opt => 
+            opt.id === optionId ? { ...opt, votes: opt.votes + 1 } : opt
+          )
+        };
+      }
+      return poll;
+    }));
+  }, []);
+  
+  // Quiz and Authentication Logic
+  useEffect(() => {
+    const confidentialPath = '/confidential-intel';
+    if (location.pathname === confidentialPath && !isHighCouncilAuthenticated) {
+      // Check if auth attempt previously failed hard to prevent quiz loop
+      if (sessionStorage.getItem('ferronova-hc-auth-final-fail') !== 'true') {
+        setShowQuiz(true);
+      } else {
+         // If final fail and trying to access, redirect
+        if (location.pathname === confidentialPath) navigate('/');
+      }
+    } else if (location.pathname !== confidentialPath && showQuiz) {
+      // If navigating away from confidential page while quiz is up, consider hiding it
+      // setShowQuiz(false); // Let QuizModal handle its own visibility mostly or use explicit close
+    }
+  }, [location.pathname, isHighCouncilAuthenticated, navigate, showQuiz]);
+
+
+  const handleAuthSuccess = () => {
+    setIsHighCouncilAuthenticated(true);
+    setShowQuiz(false);
+    sessionStorage.removeItem('ferronova-hc-auth-final-fail');
+    // If auth was triggered by navigating to confidential-intel, stay or navigate there
+    if (location.pathname !== '/confidential-intel') {
+       navigate('/confidential-intel');
+    }
   };
 
-  const listItemStyles: React.CSSProperties = {
-    marginBottom: '8px',
+  const handleAuthFailure = (isFinal: boolean) => {
+    if (isFinal) {
+      setIsHighCouncilAuthenticated(false); // Ensure it's false
+      setShowQuiz(false);
+      sessionStorage.setItem('ferronova-hc-auth-final-fail', 'true');
+      if (location.pathname === '/confidential-intel') {
+        navigate('/'); // Redirect to home on final auth failure if on protected page
+      }
+    }
+    // Non-final failures are handled by QuizModal's internal error messages
   };
 
-  const headingStyles: React.CSSProperties = {
-    color: '#f87171', // Lighter red for heading
-    marginBottom: '16px',
-    fontSize: '24px'
-  }
+  const quizQuestion = HIGH_COUNCIL_QUIZ_QUESTIONS[0]; // Assuming one question
 
   return (
-    <div style={styles}>
-      <h1 style={headingStyles}>Ferronova Council Dashboard - Diagnostic Load Test</h1>
-      <p style={{marginBottom: '12px'}}>
-        If you are seeing this message, the basic React application structure (index.html, index.tsx) and Vercel's client-side rendering capabilities are working correctly with the importmap.
-      </p>
-      <p style={{marginBottom: '20px'}}>
-        The "dark blue screen" issue you experienced likely originates from an error within the original, more complex <strong>App.tsx</strong>, its child components (e.g., QuizModal, Navbar, Pages), data constants, or state management logic.
-      </p>
-      <h2 style={{fontSize: '18px', color: '#fca5a5', marginBottom: '10px'}}>Next Steps:</h2>
-      <ol style={{ listStyle: 'decimal inside', textAlign: 'left', maxWidth: '600px', margin: '0 auto' }}>
-        <li style={listItemStyles}>
-          <strong>If this message appears:</strong> The problem is specific to your application's original code. You'll need to:
-          <ul style={{listStyle: 'circle inside', marginLeft: '20px', marginTop: '5px'}}>
-            <li style={listItemStyles}>Revert to your original `App.tsx`.</li>
-            <li style={listItemStyles}>Carefully check your browser's developer console (F12 -> Console) for JavaScript errors on the Vercel deployment with the original code.</li>
-            <li style={listItemStyles}>Incrementally comment out sections of your original `App.tsx` and its child components to isolate which part is causing the crash. React Error Boundaries can also help catch and identify issues in specific components.</li>
-          </ul>
-        </li>
-        <li style={listItemStyles}>
-          <strong>If this message does NOT appear (still a blank screen):</strong> The issue is more fundamental. Check:
-           <ul style={{listStyle: 'circle inside', marginLeft: '20px', marginTop: '5px'}}>
-             <li style={listItemStyles}>Browser console for errors (even with this simple version). Errors might point to problems loading React or other importmap dependencies.</li>
-             <li style={listItemStyles}>Your `index.html` (especially the importmap URLs and script tags).</li>
-             <li style={listItemStyles}>Vercel build logs again for any subtle clues.</li>
-           </ul>
-        </li>
-      </ol>
+    <div className="flex h-screen">
+      <Navbar 
+        isHighCouncilAuthenticated={isHighCouncilAuthenticated}
+        isExpanded={isNavbarExpanded}
+        setIsExpanded={setIsNavbarExpanded} // Pass setter to Navbar
+      />
+      {showQuiz && !isHighCouncilAuthenticated && quizQuestion && (
+        <QuizModal
+          question={quizQuestion}
+          onAuthSuccess={handleAuthSuccess}
+          onAuthFailure={handleAuthFailure}
+        />
+      )}
+      <main 
+        className={`flex-grow pt-16 overflow-y-auto bg-slate-900 transition-all duration-300 ease-in-out ${isNavbarExpanded ? 'md:ml-64' : 'md:ml-16'}`}
+      >
+        <div className="p-4 sm:p-6 lg:p-8">
+          <Routes>
+            <Route path="/" element={<DashboardPage posts={posts.slice(0, 3)} />} />
+            <Route path="/constitution" element={<ConstitutionPage />} />
+            <Route path="/council" element={<CouncilPage councilMembers={councilMembers} />} />
+            <Route path="/posts" element={<PostsPage posts={posts} addPost={addPost} councilMembers={councilMembers} />} />
+            <Route path="/voting" element={<VotingPage polls={polls} onVote={handleVote} isHighCouncilAuthenticated={isHighCouncilAuthenticated} />} />
+            <Route path="/reference" element={<ReferencePage />} />
+            <Route
+              path="/confidential-intel"
+              element={
+                isHighCouncilAuthenticated ? (
+                  <ConfidentialIntelPage />
+                ) : (
+                  // Effect will show quiz, or if quiz is bypassed/failed hard, redirect
+                  // This Navigate is a fallback if quiz doesn't show or is dismissed by final fail
+                  <Navigate to="/" replace state={{ from: location, message: "Authentication required for confidential intel." }} />
+                )
+              }
+            />
+            <Route path="*" element={<Navigate to="/" replace />} /> {/* Fallback to dashboard */}
+          </Routes>
+        </div>
+      </main>
     </div>
   );
 };
