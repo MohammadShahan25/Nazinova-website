@@ -6,7 +6,7 @@ import { NIBOverviewData } from '../types';
 
 const NIBOverviewCard: React.FC<{ nibData: NIBOverviewData }> = ({ nibData }) => (
   <div className="mt-8 p-6 bg-slate-800 rounded-lg shadow-lg border border-slate-700">
-    <h2 className="text-2xl font-bold text-red-500 mb-4">Nazinova Intelligence Bureau (NIB) – Overview</h2>
+    <h2 className="text-2xl font-bold text-red-500 mb-4">National Intelligence Bureau (NIB) – Overview</h2>
     <p className="italic text-slate-400 mb-3">{nibData.motto}</p>
     <div className="mb-4">
       <h3 className="text-lg font-semibold text-slate-200 mb-1">Purpose:</h3>
@@ -38,7 +38,7 @@ const NIBOverviewCard: React.FC<{ nibData: NIBOverviewData }> = ({ nibData }) =>
 const ConstitutionPage: React.FC = () => {
   return (
     <div className="animate-fadeIn">
-      <h2 className="text-3xl font-bold text-slate-100 mb-6">The Constitution of Nazinova</h2>
+      <h2 className="text-3xl font-bold text-slate-100 mb-6">The Constitution of Ferronova</h2>
       
       <div className="mb-6 p-6 bg-slate-800 rounded-lg shadow-lg border border-slate-700">
         <h3 className="text-xl font-semibold text-red-400 mb-3">Preamble</h3>
