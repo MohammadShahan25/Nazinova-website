@@ -1,13 +1,14 @@
+
 import { ConstitutionArticle, CouncilMember, NIBOverviewData, ReferenceCategory, RoleTitle, CouncilType, QuizQuestion, ConfidentialMessage, Poll, PollOption } from './types';
 
-export const APP_NAME = "Nazinova Council Dashboard";
+export const APP_NAME = "Ferronova Council Dashboard";
 
-export const CONSTITUTION_PREAMBLE = "We, the people of Nazinova, in the pursuit of justice, order, and prosperity, establish this constitution to guide our governance, protect our rights, and promote the welfare of our nation. We hereby set forth the following laws, rights, and responsibilities to ensure that all citizens, regardless of status, are treated equally under the law, and that the leadership serves the best interests of the people.";
+export const CONSTITUTION_PREAMBLE = "We, the people of Ferronova, in the pursuit of justice, order, and prosperity, establish this constitution to guide our governance, protect our rights, and promote the welfare of our nation. We hereby set forth the following laws, rights, and responsibilities to ensure that all citizens, regardless of status, are treated equally under the law, and that the leadership serves the best interests of the people.";
 
 export const CONSTITUTION_ARTICLES: ConstitutionArticle[] = [
   {
     id: "article-i",
-    title: "Article I: The Laws of Nazinova",
+    title: "Article I: The Laws of Ferronova",
     sections: [
       { title: "Section 1: Snitching Rule", content: ["If a person snitches on someone, the other is allowed to snitch back in retaliation."] },
       { title: "Section 2: Taxation", content: [
@@ -18,7 +19,7 @@ export const CONSTITUTION_ARTICLES: ConstitutionArticle[] = [
       },
       { title: "Section 3: Conquering Unclaimed Land", content: ["Any member who steps onto unclaimed land has the right to conquer it. This applies even to spies. If backup is required, the entire government must assist."] },
       { title: "Section 4: Defense Against Attacks", content: ["If any member is attacked, physically or mentally, all other members and volunteer civilians must provide support and aid."] },
-      { title: "Section 5: Betrayal", content: ["Civilians who betray the nation of Nazinova shall face the second-worst punishment in the kingdom: The Fadhil Treatment."] }
+      { title: "Section 5: Betrayal", content: ["Civilians who betray the nation of Ferronova shall face the second-worst punishment in the kingdom: The Fadhil Treatment."] }
     ]
   },
   {
@@ -87,7 +88,7 @@ export const CONSTITUTION_ARTICLES: ConstitutionArticle[] = [
         "Prisoners: Agraj",
         "Government Type: Democracy (imperfect)",
         "Song: ‘I’m Gonna Fly Some Planes’ by Rucka Rucka Ali",
-        "Anthem: Nazi Anthem by Adølf Hĩtler",
+        "Anthem: Nazi Anthem by Adølf Hĩtler", // Note: This remains as per original, user did not ask to change anthem.
         { text: "Flag: The ReBirth", subPoints: ["White: Peace", "Black: Bravery", "Red: Violence and Bloodshed"] }
         ], isList: true
       }
@@ -119,7 +120,7 @@ export const CONSTITUTION_ARTICLES: ConstitutionArticle[] = [
         "Code Doom: We are being snitched on",
         "Code Vader: A government member is using power for their own good and is starting rebellion",
         "Code Frick: Someone has reminded teacher about completion work",
-        "Code Skibidi: Shipping has occurred in Nazinova borders",
+        "Code Skibidi: Shipping has occurred in Ferronova borders",
         "Code COD: A government member’s rights have been violated (entire country must fight the violator)",
         "Code Diddy: Someone’s being SUS",
         "Code Sundar: Hindi teacher is nearby"
@@ -157,22 +158,22 @@ export const CONSTITUTION_ARTICLES: ConstitutionArticle[] = [
         "(Ro6B): Representative of 6B",
         "(S): Spy",
         "(LS): Lowly Spy",
-        "(DoNIB): Director of Nazinova Intelligence Bureau"
+        "(DoNIB): Director of National Intelligence Bureau"
         ], isList: true
       }
     ]
   },
   {
     id: "article-x",
-    title: "Article X: Judicial System (Court of Nazinova)",
+    title: "Article X: Judicial System (Court of Ferronova)",
     sections: [
       { title: "Section 1: Structure and Authority", content: [
-        "The Court of Nazinova shall serve as the supreme legal body, empowered to interpret the laws, resolve disputes, and ensure justice is delivered with fairness (and occasional dramatic flair).",
+        "The Court of Ferronova shall serve as the supreme legal body, empowered to interpret the laws, resolve disputes, and ensure justice is delivered with fairness (and occasional dramatic flair).",
         "The court shall operate independently of the Executive and Intelligence branches, but may consult the NIB for classified intel if necessary."
         ], isList: true
       },
       { title: "Section 2: The Head Judge", content: [
-        "Judge Dread, the Honorable and Unyielding, shall preside over all legal proceedings as Head Judge of Nazinova.",
+        "Judge Dread, the Honorable and Unyielding, shall preside over all legal proceedings as Head Judge of Ferronova.",
         "Judge Dread’s word shall be final—unless countered with the rare and powerful Reverse Uno (see Section 4)."
         ], isList: true
       },
@@ -197,9 +198,9 @@ export const CONSTITUTION_ARTICLES: ConstitutionArticle[] = [
 
 export const NIB_DATA: NIBOverviewData = {
   motto: "“Eyes Everywhere, Secrets Nowhere.”",
-  purpose: "The Nazinova Intelligence Bureau (NIB) is the nation’s top intelligence agency, responsible for gathering, analyzing, and acting on critical security information. It handles espionage, counterintelligence, cyber warfare, and covert operations to protect Nazinova from threats.",
+  purpose: "The National Intelligence Bureau (NIB) is the nation’s top intelligence agency, responsible for gathering, analyzing, and acting on critical security information. It handles espionage, counterintelligence, cyber warfare, and covert operations to protect Ferronova from threats.",
   leadership: [
-    { name: "Mohammad Shahan Khan", role: "Director (Minister of Intelligence & Operations)" },
+    { name: "Mohammad Shahan Khan", role: "Director (Minister of Intelligence & Operations)" }, // Assuming DoNIB role description updates via ROLES_AND_TITLES_DATA if displayed directly from here
     { name: "Ehan", role: "Manager (Advisor)" },
     { name: "Abhav", role: "The Enactor (MoM)" }
   ],
@@ -238,7 +239,7 @@ const governmentHierarchyRaw: Omit<CouncilMember, 'councilType'>[] = [
   { name: "Muaz", role: "MoS"},
   { name: "Idhant", role: "VMoS"},
   { name: "Hamdan", role: "RoN"}, 
-  { name: "Eeshan", role: "SS, Ro6B"}, // Note: 'Eshaan' in secondary council, 'Eeshan' here. Standardize or keep distinct if they are different people. Assuming 'Eeshan' for hierarchy for now.
+  { name: "Eeshan", role: "SS, Ro6B"},
   { name: "Abel", role: "S"}
 ];
 
@@ -308,7 +309,7 @@ export const EMERGENCY_CODES_DATA: ReferenceCategory = {
     "Code Doom: We are being snitched on",
     "Code Vader: A government member is using power for their own good and is starting rebellion",
     "Code Frick: Someone has reminded teacher about completion work",
-    "Code Skibidi: Shipping has occurred in Nazinova borders",
+    "Code Skibidi: Shipping has occurred in Ferronova borders",
     "Code COD: A government member’s rights have been violated (entire country must fight the violator)",
     "Code Diddy: Someone’s being SUS",
     "Code Sundar: Hindi teacher is nearby"
@@ -324,18 +325,18 @@ export const ROLES_AND_TITLES_DATA: RoleTitle[] = [
   { abbr: "(Ro6B)", full: "Representative of 6B" },
   { abbr: "(S)", full: "Spy" },
   { abbr: "(LS)", full: "Lowly Spy" },
-  { abbr: "(DoNIB)", full: "Director of Nazinova Intelligence Bureau" }
+  { abbr: "(DoNIB)", full: "Director of National Intelligence Bureau" }
 ];
 
-export const CONSTITUTION_CONCLUSION = "This concludes the Constitution of Nazinova. May it serve to guide the nation toward prosperity, justice, and peace for all its citizens.";
+export const CONSTITUTION_CONCLUSION = "This concludes the Constitution of Ferronova. May it serve to guide the nation toward prosperity, justice, and peace for all its citizens.";
 
 // --- High Council Authentication Quiz ---
-export const HIGH_COUNCIL_PASSWORD = "N@_zi4EvEr";
+export const HIGH_COUNCIL_PASSWORD = "F3RR0N_C0UNCIL"; // Updated Password
 
 export const HIGH_COUNCIL_QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: 'hcq_great_separation',
-    questionText: "What was the name of the time when there was a fight between the High Council members and Nazinova was split into two parts?",
+    questionText: "What was the name of the time when there was a fight between the High Council members and Ferronova was split into two parts?",
     options: [
       "The Great Separation", // Correct Answer
       "The Grand Severance",
@@ -365,7 +366,7 @@ export const HIGH_COUNCIL_QUIZ_QUESTIONS: QuizQuestion[] = [
       "The Great Sundering",
       "The Factional Fracture",
       "The Council Conflict",
-      "The Nazinova Rupture",
+      "The Ferronova Rupture", // Updated option
       "The Two Realms Period"
     ],
     correctAnswer: "The Great Separation"
