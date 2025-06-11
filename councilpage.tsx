@@ -36,7 +36,7 @@ const CouncilPage: React.FC<CouncilPageProps> = ({ councilMembers }) => {
 
   return (
     <div className="animate-fadeIn">
-      <h2 className="text-3xl font-bold text-slate-100 mb-6">Nazinova Council Directory</h2>
+      <h2 className="text-3xl font-bold text-slate-100 mb-6">Ferronova Council Directory</h2>
 
       {councilTypes.map(type => {
         const membersOfType = councilMembers.filter(cm => cm.councilType === type);
